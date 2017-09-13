@@ -1,0 +1,31 @@
+var ClientUtilities = Class.create();
+ClientUtilities.prototype = Object.extendsObject(AbstractAjaxProcessor, {
+
+    /**
+     * This function is used to update any record(s) in any table
+     * Usage: new GlideAjax('ClientUtilities')
+     * .addParam('sysparm_name', 'recordWriter')
+     * .addParam('sysparm_table', / String / Table name)
+     * .addParam('sysparm_query', / String / Encoded query)
+     * .addParam('sysparm_data', / JSON String / Field Value pairs in JSON format)
+     * Return: GUID of the updated record(s)
+     */
+    recordWriter: function() {
+
+        var updated = [];
+        var rW = new GlideRecord(this.getParameter('sysparm_table'));
+        rW.addEncodedQuery(this.getParameter('sysparm_query'));
+        rW.query();
+        while (rW.next()) {
+
+            var data = JSON.parse(this.getParameter('sysparm_data'));
+            for (var key in data) {
+                rW[key] = data[key];
+            }
+            updated.push(rW.update());
+        }
+        return updated.toString();
+    },
+
+    type: 'ClientUtilities'
+});
