@@ -1,0 +1,101 @@
+var Utilities = Class.create();
+Utilities.prototype = {
+
+    initialize: function() {},
+
+    /**
+     *This function is used to validate if the passed value is null (or) undefined (or) evaluates to an empty string
+     *Usage: new Utilities().isEmpty(value)
+     *Return: Boolean
+     */
+    isEmpty: function( /*String*/ value) {
+
+        if (JSUtil.nil(value)) {
+            return true;
+        }
+        for (var x in value) {
+            return false;
+        }
+        return true;
+    },
+
+    /**
+     *This function is used to validate if the passed text is available in the provided collection
+     *Usage: new Utilities().textChecker(text,collection)
+     *Return: Boolean
+     */
+    textChecker: function( /*String*/ text, /*Comma separated list*/ collection) {
+
+        var sliced = [];
+        sliced = collection.split(',');
+
+        for (var y in sliced) {
+            if (text == sliced[y]) {
+                return true;
+            }
+        }
+        return false;
+    },
+
+    /**
+     *This function is used to dynamically validate if a record is available in any given table
+     *Usage: new Utilities().recordChecker(table,equery)
+     *Return: Integer
+     */
+    recordChecker: function( /*String - Table name*/ table, /*String - Encoded Query*/ equery) {
+
+        var reply = 0;
+        var gA = new GlideAggregate(table);
+        gA.addEncodedQuery(equery);
+        gA.addAggregate('COUNT');
+        gA.query();
+        if (gA.next()) {
+            reply = (gA.getAggregate('COUNT'));
+        }
+        return reply;
+    },
+
+    /**
+     *This function is used to dynamically fetch a record from any given table
+     *Do not modify this function to return multiple GlideRecord objects as this will adversely impact performance
+     *Usage: new Utilities().recordFetcher(table,equery,oBy)
+     *Return: GlideRecord Object
+     */
+    recordFetcher: function( /*String - Table name*/ table, /*String - Encoded Query*/ equery, /*String - Order by descending field*/ oBy) {
+
+        var record = '';
+        var gR = new GlideRecord(table);
+        gR.addEncodedQuery(equery);
+        if (JSUtil.notNil(oBy)) {
+            gR.orderByDesc(oBy);
+        }
+        gR.setLimit(1);
+        gR.query();
+        if (gR.next()) {
+            record = gR;
+        }
+        return record;
+    },
+
+    /**
+     *This function is used to dynamically update record(s) in any given table
+     *Usage: new Utilities().recordWriter(table,equery,data)
+     *Return: Comma separated list of updated sys IDs
+     */
+    recordWriter: function( /*String - Table name*/ table, /*String - Encoded Query*/ equery, /*JSON Object - Containing field value pairs*/ data) {
+
+        var updated = [];
+        var rW = new GlideRecord(table);
+        rW.addEncodedQuery(equery);
+        rW.query();
+        while (rW.next()) {
+            for (var key in data) {
+                rW[key] = data[key];
+            }
+            updated.push(rW.update());
+        }
+        return updated.toString();
+    },
+
+    type: 'Utilities'
+};
