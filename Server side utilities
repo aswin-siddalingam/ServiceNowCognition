@@ -97,5 +97,20 @@ Utilities.prototype = {
         return updated.toString();
     },
 
+    /**
+     *This function is used to dynamically log messages with a source, either in the database (or) in the application server
+     *Control the syslog parameter using a system property which can be switched on (or) off during debug
+     *Usage: new Utilities().logger(text,source,syslog)
+     *Return: NIL
+     */
+    logger: function( /*String*/ text, /*String*/ source, /*Boolean*/ syslog) {
+
+        if (syslog) {
+            gs.log(text, source); //Will write to database & log file. Too much of this can adversely affect performance
+        } else {
+            gs.print(text, source); //Will write to the text log on the file system but not to the syslog table in the database
+        }
+    },
+
     type: 'Utilities'
 };
