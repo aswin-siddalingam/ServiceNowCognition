@@ -1,5 +1,10 @@
 var Properties = Class.create();
 
+/**
+ * Usage : Properties['approval_user'] (or) Properties['approval_group']
+ * Return : Property value
+ */
+
 Properties['approval_user'] = '62826bf03710200044e0bfc8bcbe5df1';
 Properties['approval_group'] = 'b85d44954a3623120004689b2d5dd60a';
 
@@ -7,9 +12,17 @@ Properties.prototype = {
 
     initialize: function() {},
 
+    /**
+     * Usage : new Properties().assignment_user (or) new Properties().assignment_group
+     * Return : Property value
+     */
     assignment_user: 'a8f98bb0eb32010045e1a5115206fe3a',
     assignment_group: '220f8e71c61122840197e57c33464f70',
 
+    /**
+     * Usage : new Properties().default_caller()
+     * Return : Property value
+     */
     default_caller: function() {
         return 'be82abf03710200044e0bfc8bcbe5d1c';
     },
